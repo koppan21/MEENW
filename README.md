@@ -91,30 +91,28 @@ python3 main.py
 
 ## Scripts Overview
 
-* main.py: Orchestrates the execution of all other scripts in the correct order.
-* power_logger_shelly.py: Logs real-time power consumption from a Shelly device.
-* power_logger_hwmon.py: Logs system power consumption via hwmon during automated Browse sessions.
-* power_fusion.py: Merges power_log_shelly.csv and power_log_hwmon.csv into power_log_fusion.csv.
-* power_correction.py: Corrects power data in power_log_fusion.csv by subtracting background power means, saving to power_log_corrected.csv.
-* obtain_energy.py: Calculates and reports total energy consumed per session from power_log_fusion.csv.
-* obtain_percent.py: Calculates the percentage of hwmon power relative to Shelly power per session.
-* graph_energy.py: Generates a bar chart showing total energy consumed per session.
-* graph_period.py: Creates comparative time-series plots of Shelly and hwmon power for different sessions and intervals.
-* webs.json: Defines the list of websites used by power_logger_hwmon.py for automated Browse.
+* **main.py:** Orchestrates the execution of all other scripts in the correct order.
+* **power_logger_shelly.py:** Logs real-time power consumption from a Shelly device.
+* **power_logger_hwmon.py:** Logs system power consumption via hwmon during automated Browse sessions.
+* **power_fusion.py:** Merges power_log_shelly.csv and power_log_hwmon.csv into power_log_fusion.csv.
+* **power_correction.py:** Corrects power data in power_log_fusion.csv by subtracting background power means, saving to power_log_corrected.csv.
+* **obtain_energy.py:** Calculates and reports total energy consumed per session from power_log_fusion.csv.
+* **obtain_percent.py:** Calculates the percentage of hwmon power relative to Shelly power per session.
+* **graph_energy.py:** Generates a bar chart showing total energy consumed per session.
+* **graph_period.py:** Creates comparative time-series plots of Shelly and hwmon power for different sessions and intervals.
+* **webs.json:** Defines the list of websites used by power_logger_hwmon.py for automated Browse.
 
 ## Configuration
 
-* power_logger_shelly.py:
-  * IP_SHELLY: Replace with your Shelly device's IP address.
-  *  OUTPUT_FILE: Name of the CSV file for Shelly logs.
-  *   NTERVAL: Sampling interval in seconds.
-* power_logger_hwmon.py:
-  * POWER_SENSOR_NAME: Your specific hwmon power sensor name (e.g., "fam15h_power").
-  * OUTPUT_FILE: Name of the CSV file for hwmon logs.
-  * INTERVAL: Sampling interval in seconds.
-  * DURATION: Duration of each session in seconds.
-  * PAUSE: Pause between sessions in seconds.
-* webs.json: Modify this file to include different websites for power_logger_hwmon.py to visit.
+* **power_logger_shelly.py:**
+  * *IP_SHELLY:* Replace with your Shelly device's IP address.
+  * *INTERVAL:* Sampling interval in seconds.
+* **power_logger_hwmon.py:**
+  * *POWER_SENSOR_NAME:* Your specific hwmon power sensor name (e.g., "fam15h_power").
+  * *INTERVAL:* Sampling interval in seconds.
+  * *DURATION:* Duration of each session in seconds.
+  * *PAUSE:* Pause between sessions in seconds.
+* **webs.json:** Modify this file to include different websites for power_logger_hwmon.py to visit.
 
 ## Results
 The results folder will contain the processed CSV files and generated graphs.
