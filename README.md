@@ -37,7 +37,7 @@ This repository contains a suite of Python scripts designed to measure, fuse, co
 │   ├── power_log_corrected.csv
 │   └── (graph_shelly_ranking_period_.png)
 │   └── (graph_hwmon_ranking_period_.png)
-│   └── total_energy_wh_bar_chart.pdf
+│   └── total_energy_wh_bar_chart.png
 ├── power_log_hwmon.csv
 ├── power_log_shelly.csv
 ├── power_log_fusion.csv
