@@ -87,7 +87,7 @@ To run the entire power consumption measurement and analysis pipeline, simply ex
 python3 main.py
 ```
 
-**Note:** Ensure that your Shelly device's IP address is correctly configured in power_logger_shelly.py and that the POWER_SENSOR_NAME in power_logger_hwmon.py matches your system's hwmon sensor. The power_logger_hwmon.py script will open Firefox tabs based on the webs.json file. You will need to keep the terminal running for the duration of the logging process.
+**Note:** Ensure that your Shelly device's IP address is correctly configured in `power_logger_shelly.py` and that the *POWER_SENSOR_NAME* in `power_logger_hwmon.py` matches your system's hwmon sensor. The `power_logger_hwmon.py` script will open Firefox tabs based on the `webs.json` file. You will need to keep the terminal running for the duration of the logging process.
 
 ## Scripts Overview
 
