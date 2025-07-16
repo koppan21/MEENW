@@ -50,6 +50,7 @@ This repository contains a suite of Python scripts designed to measure, fuse, co
 ├── graph_energy.py
 ├── graph_period.py
 ├── main.py
+├── requirements.txt
 └── webs.json
 ```
 
@@ -59,9 +60,6 @@ This repository contains a suite of Python scripts designed to measure, fuse, co
 
 * Linux PC
 * Python 3.x
-* `pandas` library (`pip install pandas`)
-* `requests` library (`pip install requests`)
-* `matplotlib` library (`pip install matplotlib`)
 * Firefox web browser
 * `xdotool` (for controlling Firefox tabs in `power_logger_hwmon.py` - typically available on Linux)
 * A Shelly device with power monitoring capabilities (e.g., Shelly Plug S) configured on your local network.
@@ -74,9 +72,9 @@ This repository contains a suite of Python scripts designed to measure, fuse, co
     git clone [https://github.com/your_username/your_repository_name.git](https://github.com/your_username/your_repository_name.git)
     cd your_repository_name
     ```
-2.  Install the required Python libraries:
+2.  Install the required Python libraries using `pip`:
     ```bash
-    pip install pandas requests matplotlib
+    pip install -r requirements.txt
     ```
 
 ## Usage
