@@ -6,34 +6,34 @@ FUSION_DATA = "power_log_fusion.csv"
 
 def calculate_energy_consumption(file_path=FUSION_DATA, power_column='power_shelly'):
     """
-    Calcula la energía total consumida por cada sesión a partir de datos de potencia
-    y la diferencia de tiempo entre muestras.
+    Calculates the total energy consumed per session from power data
+    and the time difference between samples.
 
     Args:
-        file_path (str): La ruta al archivo CSV que contiene los datos.
-        power_column (str): El nombre de la columna que contiene los datos de potencia
-                            ('power_shelly' o 'power_hwmon').
+        file_path (str): The path to the CSV file containing the data.
+        power_column (str): The name of the column containing the power data
+                            ('power_shelly' or 'power_hwmon').
 
     Returns:
-        pd.DataFrame: Un DataFrame con la energía total consumida (en Joules y Wh)
-                      por cada sesión, o None si hay un error.
+        pd.DataFrame: A DataFrame with the total energy consumed (in Joules and Wh)
+                      per session, or None if there's an error.
     """
     try:
         df = pd.read_csv(file_path)
-        print(f"Archivo '{file_path}' cargado exitosamente.")
-        print(f"Columnas originales: {df.columns.tolist()}")
+        print(f"File '{file_path}' loaded successfully.")
+        print(f"Original columns: {df.columns.tolist()}")
 
     except FileNotFoundError:
-        print(f"Error: El archivo '{file_path}' no se encontró.")
+        print(f"Error: The file '{file_path}' was not found.")
         return None
     except Exception as e:
-        print(f"Error al leer el archivo CSV: {e}")
+        print(f"Error reading the CSV file: {e}")
         return None
 
     required_columns = [power_column, 'session', 'timestamp']
     for col in required_columns:
         if col not in df.columns:
-            print(f"Error: La columna requerida '{col}' no se encuentra en el DataFrame. No se puede calcular la energía.")
+            print(f"Error: Required column '{col}' not found in the DataFrame. Cannot calculate energy.")
             return None
 
     df[power_column] = pd.to_numeric(df[power_column], errors='coerce')
@@ -41,8 +41,8 @@ def calculate_energy_consumption(file_path=FUSION_DATA, power_column='power_shel
     try:
         df['timestamp'] = pd.to_datetime(df['timestamp'])
     except Exception as e:
-        print(f"Error: No se pudo convertir la columna 'timestamp' a formato datetime: {e}")
-        print("Asegúrate de que la columna 'timestamp' esté en un formato reconocible (ej. ISO 8601, '%Y-%m-%d %H:%M:%S').")
+        print(f"Error: Could not convert 'timestamp' column to datetime format: {e}")
+        print("Ensure the 'timestamp' column is in a recognized format (e.g., ISO 8601, '%Y-%m-%d %H:%M:%S').")
         return None
 
     df.sort_values(by=['session', 'timestamp'], inplace=True)
@@ -51,19 +51,19 @@ def calculate_energy_consumption(file_path=FUSION_DATA, power_column='power_shel
     df.dropna(subset=[power_column, 'session', 'timestamp'], inplace=True)
     rows_after_dropna = len(df)
     if original_rows != rows_after_dropna:
-        print(f"Advertencia: Se eliminaron {original_rows - rows_after_dropna} filas con valores NaN críticos.")
+        print(f"Warning: {original_rows - rows_after_dropna} rows with critical NaN values were removed.")
     if rows_after_dropna == 0:
-        print("Error: No quedan datos válidos después de la limpieza de NaN. No se puede calcular la energía.")
+        print("Error: No valid data remaining after NaN cleaning. Cannot calculate energy.")
         return None
 
     df_filtered = df[df['session'] != 'Background'].copy()
     if df_filtered.empty:
-        print("No quedan sesiones válidas para el cálculo después de filtrar 'Background'.")
+        print("No valid sessions remaining for calculation after filtering 'Background'.")
         return None
 
     energy_results = []
     unique_sessions = df_filtered['session'].unique()
-    print(f"\nCalculando energía para {len(unique_sessions)} sesiones...")
+    print(f"\nCalculating energy for {len(unique_sessions)} sessions...")
 
     for session_name in unique_sessions:
         session_df = df_filtered[df_filtered['session'] == session_name].copy()
@@ -78,8 +78,6 @@ def calculate_energy_consumption(file_path=FUSION_DATA, power_column='power_shel
         total_energy_wh = total_energy_joules / 3600
         total_energy_kwh = total_energy_wh / 1000
 
-        print(f"Sesión '{session_name}': {total_energy_joules:.2f} J, {total_energy_wh:.4f} Wh, {total_energy_kwh:.6f} kWh")
-
         energy_results.append({
             'Session': session_name,
             'Total Energy (Joules)': total_energy_joules,
@@ -88,7 +86,7 @@ def calculate_energy_consumption(file_path=FUSION_DATA, power_column='power_shel
         })
 
     if not energy_results:
-        print("No se pudo calcular la energía para ninguna sesión.")
+        print("Could not calculate energy for any session.")
         return None
 
     energy_df = pd.DataFrame(energy_results)
@@ -99,10 +97,9 @@ if __name__ == "__main__":
     energy_df_shelly = calculate_energy_consumption(FUSION_DATA, 'power_shelly')
 
     if energy_df_shelly is not None:
-        print("\n--- Resumen de Energía Consumida por Sesión (usando power_shelly) ---")
+        print("\n--- Energy Consumption Summary per Session (using power_shelly) ---")
         print(energy_df_shelly.to_string(index=False))
 
         energy_output_csv = os.path.join(RESULTS_FOLDER, 'energy_consumption_shelly.csv')
         energy_df_shelly.to_csv(energy_output_csv, index=False)
-        print(f"\nResultados de energía guardados en: {energy_output_csv}")
-        
+        print(f"\nEnergy results saved to: {energy_output_csv}")
