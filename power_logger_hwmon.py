@@ -103,7 +103,6 @@ print("\nBlankTab session starting...")
 subprocess.Popen(["firefox", "--new-window", "about:blank"],
                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(DURATION) # Let Firefox load and stabilize
-time.sleep(PAUSE) # Pause after session
 
 # Iterate through defined URLs and capture power
 for name, url in URLS.items():

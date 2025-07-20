@@ -35,8 +35,8 @@ This repository contains a suite of Python scripts designed to measure, fuse, co
 │   ├── mean.csv
 │   ├── percentage.csv
 │   ├── power_log_corrected.csv
-│   └── (graph_shelly_ranking_period_.png)
-│   └── (graph_hwmon_ranking_period_.png)
+│   └── graph_shelly_all_samples.png
+    ├── graph_hwmon_all_samples.png
 │   └── total_energy_wh_bar_chart.png
 ├── power_log_hwmon.csv
 ├── power_log_shelly.csv
@@ -97,7 +97,7 @@ python3 main.py
 * **obtain_energy.py:** Calculates and reports total energy consumed per session from power_log_fusion.csv.
 * **obtain_percent.py:** Calculates the percentage of hwmon power relative to Shelly power per session.
 * **graph_energy.py:** Generates a bar chart showing total energy consumed per session.
-* **graph_period.py:** Creates comparative time-series plots of Shelly and hwmon power for different sessions and intervals.
+* **graph_period.py:** Creates comparative time-series plots of Shelly and hwmon power over time.
 * **webs.json:** Defines the list of websites used by power_logger_hwmon.py for automated Browse.
 
 ## Configuration
@@ -113,4 +113,12 @@ python3 main.py
 * **webs.json:** Modify this file to include different websites for power_logger_hwmon.py to visit.
 
 ## Results
-The results folder will contain the processed CSV files and generated graphs.
+The results/ directory will contain the following files after running all scripts:
+* *power_log_fusion.csv:* Fused power data from Shelly and Hwmon with session information.
+* *power_log_corrected.csv:* Fused power data corrected by subtracting background power.
+* *mean.csv:* Mean background power values for Shelly and Hwmon.
+* *energy_consumption_shelly.csv:* Total energy consumed per session (in Joules, Wh, kWh) based on Shelly data.
+* *percentage.csv:* Average percentage of Hwmon power relative to Shelly power per session.
+* *graph_shelly_all_samples.png:* Plot of Shelly power showing all samples for non-background sessions.
+* *graph_hwmon_all_samples.png:* Plot of Hwmon power showing all samples for non-background sessions.
+* *total_energy_wh_bar_chart.png:* Bar chart summarizing total energy (Wh) per session.

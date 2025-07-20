@@ -8,10 +8,11 @@ FUSION_DATA = "power_log_fusion.csv"
 def plot_separated_power_comparison(file_path=FUSION_DATA):
     """
     Generates separate comparative plots for 'power_shelly' and 'power_hwmon' for all sessions,
-    plotting the total available samples for each.
+    excluding the 'Background' session, and plotting the total available samples for each.
 
     One plot is generated for 'power_shelly' and one for 'power_hwmon',
-    where all sessions are overlaid for each power metric, showing all their data points.
+    where all non-Background sessions are overlaid for each power metric,
+    showing all their data points.
     The 'session' column is treated as a string name.
 
     Args:
@@ -58,12 +59,17 @@ def plot_separated_power_comparison(file_path=FUSION_DATA):
         df.sort_values(by=['session'], inplace=True)
         print("Warning: 'timestamp' column not found. Sorting only by session and order of appearance.")
 
-    unique_sessions = df['session'].unique()
+    df_filtered = df[df['session'] != 'Background'].copy()
+    if df_filtered.empty:
+        print("No non-Background sessions found after filtering. Cannot generate plots.")
+        return
+
+    unique_sessions = df_filtered['session'].unique() # Use the filtered DataFrame for unique sessions
     if len(unique_sessions) == 0:
-        print("Error: No unique sessions found in the data. Cannot generate plots.")
+        print("Error: No unique sessions (excluding 'Background') found in the data. Cannot generate plots.")
         return
     unique_sessions_sorted = sorted(unique_sessions.tolist())
-    print(f"Unique sessions found (sorted): {unique_sessions_sorted}")
+    print(f"Unique sessions found (excluding 'Background', sorted): {unique_sessions_sorted}")
 
     # --- Plotting for Power Shelly (All Samples) ---
     print("\n--- Generating plot for Power Shelly (All Samples) ---")
@@ -77,8 +83,7 @@ def plot_separated_power_comparison(file_path=FUSION_DATA):
     plotted_any_line_shelly = False
 
     for session_name in unique_sessions_sorted:
-        session_df_filtered = df[df['session'] == session_name]
-        session_subset = session_df_filtered.reset_index(drop=True)
+        session_subset = df_filtered[df_filtered['session'] == session_name].reset_index(drop=True)
 
         if not session_subset.empty:
             plotted_any_line_shelly = True
@@ -110,8 +115,7 @@ def plot_separated_power_comparison(file_path=FUSION_DATA):
     plotted_any_line_hwmon = False
 
     for session_name in unique_sessions_sorted:
-        session_df_filtered = df[df['session'] == session_name]
-        session_subset = session_df_filtered.reset_index(drop=True)
+        session_subset = df_filtered[df_filtered['session'] == session_name].reset_index(drop=True)
 
         if not session_subset.empty:
             plotted_any_line_hwmon = True

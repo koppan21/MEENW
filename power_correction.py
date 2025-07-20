@@ -28,8 +28,8 @@ system_bg_mean = background["power_hwmon"].mean() # Changed 'sistema_bg_mean' to
 # Create a new DataFrame with background-corrected power values
 corrected_data = pd.DataFrame({
     "timestamp": df["timestamp"],
-    "power_shelly_c": df["power_shelly"] - shelly_bg_mean,
-    "power_hwmon_c": df["power_hwmon"] - system_bg_mean,
+    "power_shelly": df["power_shelly"] - shelly_bg_mean,
+    "power_hwmon": df["power_hwmon"] - system_bg_mean,
     "session": df["session"]
 })
 
