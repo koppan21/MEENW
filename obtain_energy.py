@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 RESULTS_FOLDER = "results"
-FUSION_DATA = "power_log_corrected.csv"
+FUSION_DATA = os.path.join(RESULTS_FOLDER, "power_log_corrected.csv")
 
 def calculate_energy_consumption(file_path=FUSION_DATA, power_column='power_shelly'):
     """

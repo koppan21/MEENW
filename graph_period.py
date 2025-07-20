@@ -7,11 +7,11 @@ FUSION_DATA = "power_log_fusion.csv"
 
 def plot_separated_power_comparison(file_path=FUSION_DATA):
     """
-    Generates separate comparative plots for 'power_shelly' and 'power_hwmon' for all sessions.
+    Generates separate comparative plots for 'power_shelly' and 'power_hwmon' for all sessions,
+    plotting the total available samples for each.
 
-    Three plots are generated for 'power_shelly' and three for 'power_hwmon',
-    one for each sample interval (60, 240, 600),
-    where all sessions are overlaid for each power metric.
+    One plot is generated for 'power_shelly' and one for 'power_hwmon',
+    where all sessions are overlaid for each power metric, showing all their data points.
     The 'session' column is treated as a string name.
 
     Args:
@@ -65,75 +65,71 @@ def plot_separated_power_comparison(file_path=FUSION_DATA):
     unique_sessions_sorted = sorted(unique_sessions.tolist())
     print(f"Unique sessions found (sorted): {unique_sessions_sorted}")
 
-    sample_intervals = [60, 120, 240]
+    # --- Plotting for Power Shelly (All Samples) ---
+    print("\n--- Generating plot for Power Shelly (All Samples) ---")
+    plt.figure(figsize=(20, 10))
 
-    # shelly
-    print("\n--- Generating plots for Power Shelly ---")
-    for interval in sample_intervals:
-        plt.figure(figsize=(20, 10))
+    plt.title('Power Shelly evolution over time per Session', fontsize=16)
+    plt.xlabel('Sample Number', fontsize=12)
+    plt.ylabel('Shelly Power (W)', fontsize=12)
+    plt.grid(True, linestyle=':', alpha=0.7)
 
-        plt.title(f'Power Shelly per Session (Interval: {interval} samples)', fontsize=16)
-        plt.xlabel('Sample Number', fontsize=12)
-        plt.ylabel('Shelly Power (W)', fontsize=12)
-        plt.grid(True, linestyle=':', alpha=0.7)
+    plotted_any_line_shelly = False
 
-        plotted_any_line = False
+    for session_name in unique_sessions_sorted:
+        session_df_filtered = df[df['session'] == session_name]
+        session_subset = session_df_filtered.reset_index(drop=True)
 
-        for session_name in unique_sessions_sorted:
-            session_df_filtered = df[df['session'] == session_name]
-            session_subset = session_df_filtered.head(interval).reset_index(drop=True)
-
-            if not session_subset.empty:
-                plotted_any_line = True
-                print(f"Plotting Shelly for Session '{session_name}', Interval {interval} samples")
-                plt.plot(session_subset.index, session_subset['power_shelly'],
-                         label=f'Session {session_name}', alpha=0.7)
-            else:
-                print(f"Warning: Not enough Shelly data for Session '{session_name}' for Interval {interval}. Skipping plot.")
-
-        if plotted_any_line:
-            plt.legend(title='Session', bbox_to_anchor=(1.01, 1), loc='upper left', fontsize=8, ncol=1)
-            plt.tight_layout(rect=[0, 0, 0.85, 1])
-            filename = os.path.join(DATA_FOLDER, f"graph_shelly_ranking_period_{interval}.png")
-            plt.savefig(filename, bbox_inches='tight')
-            plt.show()
+        if not session_subset.empty:
+            plotted_any_line_shelly = True
+            print(f"Plotting Shelly for Session '{session_name}', all samples ({len(session_subset)}).")
+            plt.plot(session_subset.index, session_subset['power_shelly'],
+                     label=f'{session_name}', alpha=0.7)
         else:
-            print(f"No Shelly lines were plotted for Interval {interval}. Legend and plot will not be shown.")
-            plt.close()
+            print(f"Warning: No Shelly data for Session '{session_name}'. Skipping plot.")
 
-    # hwmon
-    print("\n--- Generating plots for Power Hwmon ---")
-    for interval in sample_intervals:
-        plt.figure(figsize=(20, 10))
+    if plotted_any_line_shelly:
+        plt.legend(title='Session', bbox_to_anchor=(1.01, 1), loc='upper left', fontsize=8, ncol=1)
+        plt.tight_layout(rect=[0, 0, 0.85, 1])
+        filename = os.path.join(DATA_FOLDER, "graph_shelly_all_samples.png")
+        plt.savefig(filename, bbox_inches='tight')
+        plt.show()
+    else:
+        print(f"No Shelly lines were plotted. No legend or plot will be shown.")
+        plt.close()
 
-        plt.title(f'Power Hwmon per Session (Interval: {interval} samples)', fontsize=16)
-        plt.xlabel('Sample Number', fontsize=12)
-        plt.ylabel('Hwmon Power (W)', fontsize=12)
-        plt.grid(True, linestyle=':', alpha=0.7)
+    # --- Plotting for Power Hwmon (All Samples) ---
+    print("\n--- Generating plot for Power Hwmon (All Samples) ---")
+    plt.figure(figsize=(20, 10))
 
-        plotted_any_line = False
+    plt.title('Power Hwmon evolution over time per Session', fontsize=16)
+    plt.xlabel('Sample Number', fontsize=12)
+    plt.ylabel('Hwmon Power (W)', fontsize=12)
+    plt.grid(True, linestyle=':', alpha=0.7)
 
-        for session_name in unique_sessions_sorted:
-            session_df_filtered = df[df['session'] == session_name]
-            session_subset = session_df_filtered.head(interval).reset_index(drop=True)
+    plotted_any_line_hwmon = False
 
-            if not session_subset.empty:
-                plotted_any_line = True
-                print(f"Plotting Hwmon for Session '{session_name}', Interval {interval} samples.")
-                plt.plot(session_subset.index, session_subset['power_hwmon'],
-                         label=f'Session {session_name}', alpha=0.7)
-            else:
-                print(f"Warning: Not enough Hwmon data for Session '{session_name}' for Interval {interval}. Skipping plot.")
+    for session_name in unique_sessions_sorted:
+        session_df_filtered = df[df['session'] == session_name]
+        session_subset = session_df_filtered.reset_index(drop=True)
 
-        if plotted_any_line:
-            plt.legend(title='Session', bbox_to_anchor=(1.01, 1), loc='upper left', fontsize=8, ncol=1)
-            plt.tight_layout(rect=[0, 0, 0.85, 1])
-            filename = os.path.join(DATA_FOLDER, f"graph_hwmon_ranking_period_{interval}.png")
-            plt.savefig(filename, bbox_inches='tight')
-            plt.show()
+        if not session_subset.empty:
+            plotted_any_line_hwmon = True
+            print(f"Plotting Hwmon for Session '{session_name}', all samples ({len(session_subset)}).")
+            plt.plot(session_subset.index, session_subset['power_hwmon'],
+                     label=f'{session_name}', alpha=0.7)
         else:
-            print(f"No Hwmon lines were plotted for Interval {interval}. Legend and plot will not be shown.")
-            plt.close()
+            print(f"Warning: No Hwmon data for Session '{session_name}'. Skipping plot.")
+
+    if plotted_any_line_hwmon:
+        plt.legend(title='Session', bbox_to_anchor=(1.01, 1), loc='upper left', fontsize=8, ncol=1)
+        plt.tight_layout(rect=[0, 0, 0.85, 1])
+        filename = os.path.join(DATA_FOLDER, "graph_hwmon_all_samples.png")
+        plt.savefig(filename, bbox_inches='tight')
+        plt.show()
+    else:
+        print(f"No Hwmon lines were plotted. No legend or plot will be shown.")
+        plt.close()
 
 
 if __name__ == "__main__":
